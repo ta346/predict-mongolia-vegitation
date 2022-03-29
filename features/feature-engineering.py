@@ -1,4 +1,7 @@
 import pandas as pd
+import datetime
+import geopandas
+
 
 def parseDate(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -32,15 +35,35 @@ def get_datetime(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
-def parseCounty(df: pd.DataFrame) -> pd.DataFrame:
+
+def getMongoliaShpFile(filepath: str="soum_aimag.shp") -> pd.DataFrame:
     """
-    Function gets County and Province from DataFrame
+    Function reads Shp File from
 
     Args:
-        df (pd.DataFrame):
+        filepath (str, optional): Defaults to "soum_aimag.shp".
 
     Returns:
         pd.DataFrame:
     """
-    df["province"] = df[""][0:2]
-    df["county"] = df[""][2:4]
+    gdf = geopandas.read_file("soum_aimag.shp")
+    df = pd.DataFrame(gdf)
+    return df
+
+
+def joinShpData(df1: pd.DataFrame, df2: pd.DataFrame, partition: str="asid"):
+    """
+    Outer Join 2 Dataframe based on partition
+
+    Args:
+        df1 - pd.DataFrame:
+        df2 - pd.DataFrame:
+        partition str: Defaults to "asid".
+
+    Returns:
+        pd.DataFrame:
+    """
+    df2["asid"] = df2["asid"].astype("int")
+    df1["asid"] = df1["asid"].astype("int")
+    df = pd.merge(df1, df2, on=partition, how="outer")
+    return df
