@@ -50,3 +50,18 @@ def joinShpData(df1: pd.DataFrame, df2: pd.DataFrame, partition: str="asid"):
     df1["asid"] = df1["asid"].astype("int")
     df = pd.merge(df1, df2, on=partition, how="outer")
     return df
+
+def imputeByDropping(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Function drops missing rows from dataset
+
+    Args:
+        df (pd.DataFrame):
+
+    Returns:
+        pd.DataFrame:
+    """
+    df = df.drop(["Bagname"], axis = 1)
+    df = df.dropna(subset=['AimagName', 'SoumName', 'PlotName', 'Longitude', 'Latitude', 'aid', 'sid', 'geometry'])
+    df = df.dropna(subset=["date", "ndvi_count", "ndvi_int_mean_10_90", "ndvi_max", "ndvi_mean", "ndvi_median", "ndvi_min"])
+    return df
